@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IX AI</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="./styles.css" id="mainStyles">
+  <!-- Fallback CSS if local file fails -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/your-username/ix-ai@main/styles.css" id="fallbackStyles" disabled>
+  <script>
+    // Enable fallback CSS if main CSS fails to load
+    window.addEventListener('load', () => {
+      const mainStyles = document.getElementById('mainStyles');
+      const fallbackStyles = document.getElementById('fallbackStyles');
+      if (mainStyles.sheet.cssRules.length === 0) {
+        fallbackStyles.removeAttribute('disabled');
+        console.log('Falling back to CDN-hosted CSS due to local file failure.');
+      }
+    });
+  </script>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <img src="https://www.ideasiclex.com/wp-content/uploads/2023/10/IX_Logo-1.png" alt="Ideasicle X Logo" class="logo">
+      <h1>IX AI</h1>
+      <nav class="desktop-nav">
+        <a id="navInstructions" href="#" aria-label="Instructions">Instructions</a>
+        <a id="navTips" href="#" aria-label="Tips">Tips</a>
+        <a id="navSuggestionBox" href="#" aria-label="Suggestion Box">Suggestion Box</a>
+      </nav>
+      <div class="mobile-nav">
+        <button class="hamburger" aria-label="Toggle Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="mobile-menu">
+          <a id="navInstructionsMobile" href="#" aria-label="Instructions">Instructions</a>
+          <a id="navTipsMobile" href="#" aria-label="Tips">Tips</a>
+          <a id="navSuggestionBoxMobile" href="#" aria-label="Suggestion Box">Suggestion Box</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div id="notification" class="notification" style="display: none;"></div>
+
+  <main>
+    <div class="container">
+      <section id="stage1">
+        <h2>Step 1: Input Creative Brief</h2>
+        <div class="info-box">
+          <p class="step-instructions">Select your hallucination level and AI engine, then enter a creative brief below or use the Brief Builder.</p>
+          <div class="controls">
+            <div class="hallucination-level">
+              <h3>Hallucination Level</h3>
+              <label><input type="radio" name="hallucinationLevel" value="none" aria-label="None"> None</label>
+              <label><input type="radio" name="hallucinationLevel" value="microdose" aria-label="Microdose"> Microdose</label>
+              <label><input type="radio" name="hallucinationLevel" value="buzzed" checked aria-label="Buzzed"> Buzzed</label>
+              <label><input type="radio" name="hallucinationLevel" value="tripping" aria-label="Tripping"> Tripping</label>
+            </div>
+            <div class="ai-engine">
+              <h3>AI Engine</h3>
+              <label><input type="radio" name="aiEngine" value="Grok" checked aria-label="Grok"> Grok</label>
+              <label><input type="radio" name="aiEngine" value="ChatGPT" aria-label="ChatGPT"> ChatGPT</label>
+              <label><input type="radio" name="aiEngine" value="Perplexity" aria-label="Perplexity"> Perplexity</label>
+            </div>
+          </div>
+          <button id="briefBuilderBtn" class="secondary-btn" aria-label="Open Brief Builder">Brief Builder</button>
+          <textarea id="briefInput" rows="8" placeholder="Enter or paste your creative brief here..." aria-label="Creative Brief"></textarea>
+          <div class="button-group">
+            <button id="clearInputBtn" class="secondary-btn" aria-label="Clear Input">Clear</button>
+            <button id="generatePromptBtn" class="primary-btn" aria-label="Generate Prompt"><i class="fas fa-lightbulb"></i>Generate Prompt</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="stage2" style="display: none;">
+        <h2>Step 2: Input AI Response</h2>
+        <div class="info-box">
+          <p class="step-instructions">Paste the entire response from your AI engine below, then click Process.</p>
+          <textarea id="llmResponse" rows="8" placeholder="Paste AI response here..." aria-label="AI Response"></textarea>
+          <div id="stage2Actions" class="button-group">
+            <button id="processBtn" class="primary-btn" aria-label="Process AI Response"><i class="fas fa-cogs"></i>Process</button>
+          </div>
+        </div>
+        <div id="ideasContainer"></div>
+      </section>
+
+      <aside id="approvedIdeas" style="display: none;">
+        <h2>Approved Ideas (<span id="approvedCount">0</span>)</h2>
+        <p id="noIdeas">No approved ideas yet.</p>
+        <div id="miniCardsContainer"></div>
+        <button id="generatePdfBtn" class="primary-btn" style="display: none;" aria-label="Generate PDF"><i class="fas fa-file-pdf"></i>Generate PDF</button>
+      </aside>
+    </div>
+  </main>
+
+  <div id="loadingModal" class="modal">
+    <div class="modal-content">
+      <div class="loading-header">IX AI is:</div>
+      <div id="loadingMessage" class="loading-message"></div>
+      <div class="progress-bar-container">
+        <div id="progressBar" class="progress"></div>
+        <div id="sparksContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="instructionsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">Instructions</div>
+      <button class="modal-close-btn" aria-label="Close Instructions Modal">×</button>
+      <p>This app is designed to generate super prompts specifically to improve your favorite AI engine's creativity. We do it by taking your creative brief and combining that with AI's ability to hallucinate, our way to simulate human creativity. Follow the three steps below to choose your level of hallucination and generate your first prompt.</p>
+      <ol>
+        <li><strong>Step 1: Select Hallucination Level</strong><br>Choose the level of creativity for the AI's ideas.</li>
+        <li><strong>Step 2: Choose AI Engine</strong><br>Select your preferred AI engine for generating ideas.</li>
+        <li><strong>Step 3: Generate Prompt</strong><br>Use our Brief Builder form to generate a creative brief. Or you can type or paste your brief into the text area. Then click "Generate Prompt" to copy a prompt into your clipboard. A pop-up will allow you to open your selected AI engine in a new tab. Paste the prompt there and copy the full AI response and return to this tab.</li>
+        <li><strong>Step 4: Input AI Response</strong><br>Paste the entire AI-generated response into the "AI Response" text area. Click "Process" to display the ideas for review.</li>
+        <li><strong>Step 5: Review Ideas, Refine Ideas, Approve Ideas, Generate More Ideas</strong><br>Review the ideas, check "Approve" for ideas you want to keep, or click "Refine Idea" to develop an idea further in the AI engine. Input your general reaction to the ideas in the General Feedback box and click "Generate More Ideas" to create a new prompt to paste into your existing AI engine that will respond to your feedback.</li>
+        <li><strong>Step 6: Export Approved Ideas</strong><br>Approved ideas appear on the right; click "Generate PDF" to save them, including any notes added in the idea details.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div id="tipsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">Tips</div>
+      <button class="modal-close-btn" aria-label="Close Tips Modal">×</button>
+      <ul>
+        <li><strong>Be specific in your creative brief:</strong> Include details about the brand, target audience, and desired message for better AI-generated ideas.</li>
+        <li><strong>Experiment with hallucination levels:</strong> Higher levels like "Tripping" can yield more creative but less conventional ideas.</li>
+        <li><strong>Use the Brief Builder:</strong> It helps structure your brief for optimal AI response quality.</li>
+        <li><strong>Refine iteratively:</strong> Use the "Refine Idea" button to improve specific ideas based on your feedback.</li>
+        <li><strong>Save your work:</strong> Generate a PDF of approved ideas to keep a record of your session.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="suggestionBoxModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">Suggestion Box</div>
+      <button class="modal-close-btn" aria-label="Close Suggestion Box Modal">×</button>
+      <p>Your email client has opened to send suggestions to <a href="mailto:willb@ideasiclex.com">willb@ideasiclex.com</a>. Let us know how we can improve IX AI!</p>
+    </div>
+  </div>
+
+  <div id="aiEngineModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">Done!</div>
+      <button class="modal-close-btn" aria-label="Close AI Engine Modal">×</button>
+      <p id="aiEngineMessage"></p>
+      <p id="aiEngineName" style="display: none;"></p>
+      <button id="openAiEngineBtn" class="primary-btn" aria-label="Open AI Engine">Open AI Engine</button>
+    </div>
+  </div>
+
+  <div id="briefBuilderModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">Brief Builder</div>
+      <button id="closeBriefBuilder" class="modal-close-btn" aria-label="Close Brief Builder Modal">×</button>
+      <form>
+        <label for="briefIdeaType">Type of Idea:</label>
+        <input type="text" id="briefIdeaType" placeholder="e.g., tagline, campaign, stunt" aria-label="Type of Idea">
+        <label for="briefBrandProduct">Brand/Product:</label>
+        <input type="text" id="briefBrandProduct" placeholder="e.g., Ideasicle X" aria-label="Brand or Product">
+        <label for="briefTargetAudience">Target Audience:</label>
+        <input type="text" id="briefTargetAudience" placeholder="e.g., marketing professionals, 25-45" aria-label="Target Audience">
+        <label for="briefMessage">Key Message:</label>
+        <input type="text" id="briefMessage" placeholder="e.g., creativity without boundaries" aria-label="Key Message">
+        <label for="briefAdditionalInfo">Additional Info:</label>
+        <textarea id="briefAdditionalInfo" rows="4" placeholder="Any other details..." aria-label="Additional Information"></textarea>
+        <div class="button-group">
+          <button type="button" id="cancelBriefBtn" class="secondary-btn" aria-label="Cancel">Cancel</button>
+          <button type="button" id="saveBriefBtn" class="primary-btn" aria-label="Save Brief">Save Brief</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="ideaModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">Idea Details</div>
+      <button id="modalClose" class="modal-close-btn" aria-label="Close Idea Modal">×</button>
+      <div id="modalIdeaContent"></div>
+      <label for="modalIdeaNotes">Notes:</label>
+      <textarea id="modalIdeaNotes" rows="4" placeholder="Add notes about this idea..." aria-label="Idea Notes"></textarea>
+      <div class="approve-checkbox">
+        <label><input type="checkbox" id="modalApproveCheckbox" class="approve-idea" aria-label="Approve Idea"> Approve</label>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
