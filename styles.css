@@ -144,7 +144,15 @@ aside {
 h2 {
   font-size: 24px;
   margin-bottom: 15px;
-  color: var(--primary-black);
+  color: var(--primary-white);
+}
+
+.info-box {
+  background-color: var(--primary-black);
+  border: 2px solid var(--primary-yellow);
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
 }
 
 .step-instructions {
@@ -190,10 +198,6 @@ textarea, input[type="text"] {
   resize: vertical;
 }
 
-textarea:focus {
-  border-color: var(--primary-yellow);
-}
-
 .button-group {
   display: flex;
   gap: 10px;
@@ -226,32 +230,11 @@ textarea:focus {
   background: transparent;
   border: 2px solid var(--primary-green);
   color: var(--primary-white);
-  padding: 10px 20px;
 }
 
 .secondary-btn:hover {
+  background-color: var(--secondary-orange);
   border-color: var(--secondary-orange);
-  background: var(--secondary-orange);
-  color: var(--primary-white);
-}
-
-#stage1 {
-  background: var(--primary-black);
-  border: 2px solid var(--primary-yellow);
-  border-radius: 4px;
-  padding: 20px;
-  overflow: hidden;
-  color: var(--primary-white);
-}
-
-#stage2 {
-  background: var(--secondary-gray-light);
-  border: 2px solid var(--primary-green);
-  border-radius: 8px;
-  padding: 20px;
-  overflow-x: auto;
-  display: none;
-  color: var(--primary-black);
 }
 
 .idea-card {
@@ -259,7 +242,7 @@ textarea:focus {
   border: 2px solid var(--primary-green);
   border-radius: 8px;
   padding: 20px;
-  margin: 20px 0;
+  margin-bottom: 20px;
 }
 
 .idea-card.revised {
