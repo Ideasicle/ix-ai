@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IX AI Creative Studio</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<link rel="icon" href="data:," />
+
+<body>
+  <div id="appContainer">
+    <!-- Dashboard View -->
+    <div id="dashboard" class="view active">
+      <h1>IX AI Dashboard</h1>
+
+      <!-- Stats Section -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-title">Total Ideas Generated</div>
+          <div class="stat-number" id="totalIdeas">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Total Live Jobs</div>
+          <div class="stat-number" id="activeJobs">0</div>
+        </div>
+        <div class="stat-card">
+          <button id="newJobBtn" class="primary">Start New Job</button>
+        </div>
+      </div>
+
+      <!-- Live Jobs Section -->
+      <div class="live-jobs">
+        <h2>Live Jobs</h2>
+        <div class="job-grid" id="jobGrid"></div>
+      </div>
+    </div>
+
+    <!-- Job Setup View -->
+    <div id="job-setup" class="view">
+      <h1>New Creative Job</h1>
+      <form id="jobSetupForm">
+        <label for="jobName">Job Name</label>
+        <input type="text" id="jobName" required />
+
+        <label for="creativeBrief">Creative Brief</label>
+        <textarea id="creativeBrief" placeholder="Describe the brand, audience, goal, and tone..." required></textarea>
+
+        <label>Creativity Level</label>
+        <div class="slider-container">
+          <input type="range" id="creativitySlider" class="slider" min="0" max="3" value="1" />
+          <div class="slider-labels">
+            <span>None</span>
+            <span>Microdose</span>
+            <span>Buzzed</span>
+            <span>Tripping</span>
+          </div>
+        </div>
+
+        <button type="submit" class="primary">Generate Ideas</button>
+        <a href="#dashboard" class="back-link">← Back to Dashboard</a>
+      </form>
+    </div>
+
+    <!-- Creative Process View -->
+    <div id="creative-process" class="view">
+      <h1>Flurry Of Ideas</h1>
+      <p>
+        Click on a promising idea to develop it further. Select ideas you don’t like and click “Replace Selected” to generate more ideas. Or click the “New Flurry” button for a whole new flurry of ideas.
+      </p>
+
+      <div class="idea-canvas">
+        <div class="idea-grid" id="ideaGrid"></div>
+      </div>
+
+      <div class="action-buttons">
+        <button id="replaceSelectedBtn" class="danger">Replace Selected</button>
+        <button id="newFlurryBtn" class="primary">New Flurry</button>
+      </div>
+
+      <div id="focusMode" class="focus-mode-container" style="display: none;">
+        <button class="secondary back-button" id="backToFlurry">← Back to Flurry</button>
+        <div class="focus-idea" id="focusIdea"></div>
+
+        <!-- Chat Section -->
+        <div class="chat-section">
+          <h3>Ask the AI anything about this idea</h3>
+          <div class="message-container" id="chatMessages"></div>
+          <input type="text" id="chatInput" placeholder="Type your question..." />
+          <button id="sendChatBtn" class="secondary">Send</button>
+        </div>
+
+        <!-- Build Section -->
+        <div class="build-section">
+          <h3>Want to develop this idea further? Headlines? Activations? Visuals?</h3>
+          <input type="text" id="buildInput" placeholder="e.g. 4 headlines with a humorous tone" />
+          <button id="developIdeaBtn" class="primary">Develop This Idea</button>
+          <div class="build-grid" id="buildResults"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Guidance -->
+  <div id="directionModal" class="modal">
+    <div class="modal-content">
+      <h3>Want to guide the next round?</h3>
+      <input type="text" id="directionInput" placeholder="e.g. more emotional, focus on Gen Z" />
+      <div class="modal-buttons">
+        <button id="cancelDirection">Cancel</button>
+        <button id="confirmDirection" class="primary">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js" type="module"></script>
+</body>
+</html>
