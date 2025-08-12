@@ -361,7 +361,7 @@ async function showDirectionModal() {
 // Call Grok API
 export async function callGrokAPI(prompt) {
   try {
-    const response = await fetch('/.netlify/functions/grok', {
+    const response = await fetch('/.netlify/functions/grok-beta', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
