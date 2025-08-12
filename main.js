@@ -1,4 +1,4 @@
-// Global State
+ // Global State
 window.state = {
   jobs: [],
   currentJobName: null,
@@ -180,32 +180,50 @@ function renderJobSetup() {
 
 // Render Creative Process
 function renderCreativeProcess() {
-  if (!window.state.currentJobName) {
-    window.location.hash = 'dashboard';
-    return;
-  }
+  const flurryMode = document.getElementById('flurryMode');
+  const focusMode = document.getElementById('focusMode');
 
-  const job = window.state.jobs.find(j => j.name === window.state.currentJobName);
-  if (!job) {
-    window.location.hash = 'dashboard';
+  if (!flurryMode || !focusMode) {
+    setTimeout(renderCreativeProcess, 50);
     return;
   }
 
   const isFocusMode = window.state.view === 'focus';
-  document.getElementById('flurryMode').style.display = isFocusMode ? 'none' : 'block';
-  document.getElementById('focusMode').style.display = isFocusMode ? 'block' : 'none';
+  flurryMode.style.display = isFocusMode ? 'none' : 'block';
+  focusMode.style.display = isFocusMode ? 'block' : 'none';
 
+  // Rest of your logic (select idea, render grid, etc.)
   if (isFocusMode && window.state.selectedIdea) {
-    document.getElementById('focusIdea').textContent = window.state.selectedIdea;
-    // Clear chat and builds on re-enter?
-  }
-
-  // Render ideas if in flurry
-  if (!isFocusMode) {
+    const el = document.getElementById('focusIdea');
+    if (el) el.textContent = window.state.selectedIdea;
+  } else {
     renderIdeaGrid();
   }
 
   bindCreativeProcessEvents();
+}
+
+async function callGrokAPI(prompt) {
+  try {
+    const response = await fetch('/.netlify/functions/grok', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ prompt })
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`HTTP ${response.status}: ${text}`);
+    }
+
+    const data = await response.json();
+    return data.reply;
+  } catch (err) {
+    console.error('AI call failed:', err);
+    throw new Error('Failed to reach AI: ' + err.message);
+  }
 }
 
 // Generate AI Prompt
@@ -361,20 +379,28 @@ async function showDirectionModal() {
 }
 
 // Call Grok API
-function renderCreativeProcess() {
-  const flurryMode = document.getElementById('flurryMode');
-  const focusMode = document.getElementById('focusMode');
+async function callGrokAPI(prompt) {
+  try {
+    const response = await fetch('/.netlify/functions/grok', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ prompt }) // ✅ Ensure this is sent
+    });
 
-  if (!flurryMode || !focusMode) {
-    setTimeout(renderCreativeProcess, 50);
-    return;
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`HTTP ${response.status}: ${text}`);
+    }
+
+    const data = await response.json();
+    return data.reply;
+  } catch (err) {
+    console.error('AI call failed:', err);
+    // ✅ Don't lie — it's not the API key
+    throw new Error('Failed to reach AI: ' + err.message);
   }
-
-  const isFocusMode = window.state.view === 'focus';
-  flurryMode.style.display = isFocusMode ? 'none' : 'block';
-  focusMode.style.display = isFocusMode ? 'block' : 'none';
-
-  // ... rest
 }
 
 // Initialize
