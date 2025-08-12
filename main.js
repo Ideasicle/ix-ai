@@ -203,7 +203,6 @@ function renderCreativeProcess() {
   bindCreativeProcessEvents();
 }
 
-async function callGrokAPI(prompt) {
   try {
     const response = await fetch('/.netlify/functions/grok', {
       method: 'POST',
@@ -379,14 +378,14 @@ async function showDirectionModal() {
 }
 
 // Call Grok API
-async function callGrokAPI(prompt) {
+export async function callGrokAPI(prompt) {
   try {
     const response = await fetch('/.netlify/functions/grok', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ prompt }) // ✅ Ensure this is sent
+      body: JSON.stringify({ prompt })
     });
 
     if (!response.ok) {
@@ -398,7 +397,6 @@ async function callGrokAPI(prompt) {
     return data.reply;
   } catch (err) {
     console.error('AI call failed:', err);
-    // ✅ Don't lie — it's not the API key
     throw new Error('Failed to reach AI: ' + err.message);
   }
 }
