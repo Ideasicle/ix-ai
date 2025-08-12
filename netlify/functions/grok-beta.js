@@ -24,7 +24,7 @@ exports.handler = async (event, context) => {
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'grok-beta',
+        model: 'grok',
         messages: [{ role: 'user', content: prompt }],
         max_tokens: 500
       })
