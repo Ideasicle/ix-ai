@@ -361,23 +361,28 @@ async function showDirectionModal() {
 }
 
 // Call Grok API
-// In main.js
 async function callGrokAPI(prompt) {
-  const response = await fetch('/.netlify/functions/grok', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ prompt })
-  });
+  try {
+    const response = await fetch('/.netlify/functions/grok', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ prompt }) // ✅ Ensure this is sent
+    });
 
-  if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.error || 'Failed to reach AI');
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`HTTP ${response.status}: ${text}`);
+    }
+
+    const data = await response.json();
+    return data.reply;
+  } catch (err) {
+    console.error('AI call failed:', err);
+    // ✅ Don't lie — it's not the API key
+    throw new Error('Failed to reach AI: ' + err.message);
   }
-
-  const data = await response.json();
-  return data.reply;
 }
 
 // Initialize
