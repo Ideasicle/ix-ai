@@ -161,7 +161,6 @@ function renderJobSetup() {
       }
 
       const prompt = generateInitialIdeasPrompt(brief, 8, level);
-      const response = await callGrokAPI(prompt);
       const ideas = parseIdeasFromResponse(response, 8);
 
       window.state.lastIdeas = ideas;
@@ -201,28 +200,6 @@ function renderCreativeProcess() {
   }
 
   bindCreativeProcessEvents();
-}
-
-  try {
-    const response = await fetch('/.netlify/functions/grok', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ prompt })
-    });
-
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`HTTP ${response.status}: ${text}`);
-    }
-
-    const data = await response.json();
-    return data.reply;
-  } catch (err) {
-    console.error('AI call failed:', err);
-    throw new Error('Failed to reach AI: ' + err.message);
-  }
 }
 
 // Generate AI Prompt
