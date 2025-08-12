@@ -14,7 +14,13 @@ exports.handler = async (event, context) => {
 
   const { prompt } = body;
 
-  const apiKey = 'xai-yWcWSmsmyMa8OTEhSGGHi4h5pgKssx6pjlm96pU6R66O2ktZMQGFPM1c05wyPmBwG1oxyCiks098Ly3V'; // ← PASTE YOUR XAI API KEY HERE
+  const apiKey = process.env.XAI_API_KEY;
+if (!apiKey) {
+  return {
+    statusCode: 500,
+    body: JSON.stringify({ error: 'API key not configured on server' })
+  };
+}
 
   try {
     const response = await fetch('https://api.x.ai/v1/chat/completions', {
