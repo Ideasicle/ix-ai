@@ -104,7 +104,7 @@ function renderDashboard() {
   });
 }
 
-// Render Job Setup
+// // Render Job Setup
 function renderJobSetup() {
   const form = document.getElementById('jobSetupForm');
   const nameInput = document.getElementById('jobName');
@@ -116,65 +116,69 @@ function renderJobSetup() {
   briefInput.value = window.state.lastBrief || '';
   slider.value = HALLUCINATION_LEVELS.indexOf(window.state.lastHallucinationLevel);
 
-  form.onsubmit = (e) => {
-  e.preventDefault();
-  const name = nameInput.value.trim();
-  const brief = briefInput.value.trim();
-  const levelIdx = parseInt(slider.value);
-  const level = HALLUCINATION_LEVELS[levelIdx];
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const name = nameInput.value.trim();
+    const brief = briefInput.value.trim();
+    const levelIdx = parseInt(slider.value);
+    const level = HALLUCINATION_LEVELS[levelIdx];
 
-  if (!name || !brief) return alert('Please fill in all fields.');
-
-  // Save job
-  const job = {
-    name,
-    brief,
-    level,
-    ideas: [],
-    createdAt: new Date().toISOString(),
-    archived: false
-  };
-
-  const existingIndex = window.state.jobs.findIndex(j => j.name === name);
-  if (existingIndex > -1) {
-    window.state.jobs[existingIndex] = job;
-  } else {
-    window.state.jobs.push(job);
-  }
-
-  window.state.currentJobName = name;
-  window.state.lastBrief = brief;
-  window.state.lastHallucinationLevel = level;
-  window.state.jobContext = `Job: ${name}\nBrief: ${brief}`;
-
-  saveState();
-
-  // ✅ STEP 1: Navigate to creative process
-  window.location.hash = 'creative-process';
-
-  // ✅ STEP 2: Wait for DOM to update, then show THINKING
-  setTimeout(async () => {
-    try {
-      const canvas = document.getElementById('canvas');
-      if (canvas) {
-        canvas.innerHTML = '<div class="thinking">THINKING...</div>';
-      }
-
-      const prompt = generateInitialIdeasPrompt(brief, 8, level);
-      const ideas = parseIdeasFromResponse(response, 8);
-
-      window.state.lastIdeas = ideas;
-      job.ideas = ideas;
-      saveState();
-
-      // ✅ Now render the ideas
-      renderCreativeProcess();
-    } catch (err) {
-      alert('Failed to generate ideas. Please try again.');
-      console.error(err);
+    if (!name || !brief) {
+      alert('Please fill in all fields.');
+      return;
     }
-  }, 100); // Small delay to ensure view is rendered
-};
+
+    // Save job
+    const job = {
+      name,
+      brief,
+      level,
+      ideas: [],
+      createdAt: new Date().toISOString(),
+      archived: false
+    };
+
+    const existingIndex = window.state.jobs.findIndex(j => j.name === name);
+    if (existingIndex > -1) {
+      window.state.jobs[existingIndex] = job;
+    } else {
+      window.state.jobs.push(job);
+    }
+
+    window.state.currentJobName = name;
+    window.state.lastBrief = brief;
+    window.state.lastHallucinationLevel = level;
+    window.state.jobContext = `Job: ${name}\nBrief: ${brief}`;
+
+    saveState();
+
+    // ✅ Navigate first
+    window.location.hash = 'creative-process';
+
+    // ✅ Wait for view to render, then show THINKING
+    setTimeout(async () => {
+      try {
+        const canvas = document.getElementById('canvas');
+        if (canvas) {
+          canvas.innerHTML = '<div class="thinking">THINKING...</div>';
+        }
+
+        const prompt = generateInitialIdeasPrompt(brief, 8, level);
+        const response = await callGrokAPI(prompt);
+        const ideas = parseIdeasFromResponse(response, 8);
+
+        window.state.lastIdeas = ideas;
+        job.ideas = ideas;
+        saveState();
+
+        // ✅ Now render the ideas
+        renderCreativeProcess();
+      } catch (err) {
+        alert('Failed to generate ideas. Please try again.');
+        console.error(err);
+      }
+    }, 100);
+  };
 }
 
 // Render Creative Process
