@@ -361,23 +361,20 @@ async function showDirectionModal() {
 }
 
 // Call Grok API
-// In main.js
-async function callGrokAPI(prompt) {
-  const response = await fetch('/.netlify/functions/grok', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ prompt })
-  });
+function renderCreativeProcess() {
+  const flurryMode = document.getElementById('flurryMode');
+  const focusMode = document.getElementById('focusMode');
 
-  if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.error || 'Failed to reach AI');
+  if (!flurryMode || !focusMode) {
+    setTimeout(renderCreativeProcess, 50);
+    return;
   }
 
-  const data = await response.json();
-  return data.reply;
+  const isFocusMode = window.state.view === 'focus';
+  flurryMode.style.display = isFocusMode ? 'none' : 'block';
+  focusMode.style.display = isFocusMode ? 'block' : 'none';
+
+  // ... rest
 }
 
 // Initialize

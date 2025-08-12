@@ -133,28 +133,13 @@ textarea {
   width: 100%;
 }
 
-/* Canvas */
-.canvas {
+/* Idea Canvas */
+.idea-canvas {
   background: linear-gradient(90deg, #009340, #FFFF67);
-  color: #1a1a1a;
-  padding: 30px;
+  padding: 20px;
   border-radius: 12px;
   margin: 20px 0;
-  text-align: center;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  min-height: 300px; /* Ensure minimum height */
-}
-.canvas h2 {
-  font-size: 28px;
-  margin-bottom: 10px;
-}
-.canvas p {
-  font-size: 16px;
-  opacity: 0.9;
-}
-.thinking {
-  font-size: 24px;
-  font-weight: bold;
 }
 .idea-grid {
   display: grid;
@@ -285,11 +270,4 @@ textarea {
   justify-content: flex-end;
   gap: 10px;
   margin-top: 15px;
-}
-
-/* Navigation */
-.nav {
-  margin-bottom: 20px;
-  display: flex;
-  gap: 10px;
 }
